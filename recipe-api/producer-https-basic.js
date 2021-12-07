@@ -1,12 +1,22 @@
 import Fastify from 'fastify';
+import fs from 'fs';
+import dirname from './../dirname.js';
 
-const server = Fastify({logger:true});
 const HOST = process.env.HOST || '127.0.0.1';
 const PORT = process.env.PORT || 4000;
 
-console.log(`worker pid = ${process.pid}`);
+
+
+
+const server = Fastify({logger:true},{
+    https:{
+        key: fs.readFileSync(dirname + "\\recipe-api\\tls\\basic-private.key"),
+        cert: fs.readFileSync(dirname + "\\shared\\tls\\basic-certificate.cert"),
+    }
+});
 
 server.get('/recipes/:id', async(req,reply)=>{
+
     console.log(`worker request pid=${process.pid}`);
     const id = Number(req.params.id);
     if(id!=42){
